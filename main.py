@@ -54,9 +54,14 @@ async def on_startup(bot: Bot) -> None:
         else:
             logger.warning("WEBHOOK_BASE_URL not set -- bot will not receive updates until configured.")
     except Exception:
+        # Catch-all so the real failure reason is never silently swallowed.
         logger.exception("on_startup FAILED with an exception:")
         raise
-    
+
+
+async def on_shutdown(bot: Bot) -> None:
+    await bot.delete_webhook()
+
 
 def create_app() -> web.Application:
     if not config.BOT_TOKEN:
