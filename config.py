@@ -31,15 +31,19 @@ OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1/chat/completions"
 # periodically and update this list. This is the ONE place that needs editing
 # when a free model dies or gets pulled.
 VISION_MODELS = [
-    "meta-llama/llama-4-maverick:free",
-    "qwen/qwen2.5-vl-72b-instruct:free",
-    "google/gemini-2.0-flash-exp:free",
+    "nvidia/nemotron-nano-12b-v2-vl:free",
+    # NOTE: this is currently the ONLY confirmed vision-capable free model
+    # from our last live check of openrouter.ai/api/v1/models (see README).
+    # If this one fails/gets pulled, check the live model list again rather
+    # than guessing -- an unverified "vision" model that's actually text-only
+    # will fail Task 1 image reads silently or with confusing errors.
 ]
 
 TEXT_MODELS = [
-    "meta-llama/llama-4-maverick:free",
-    "deepseek/deepseek-r1:free",
+    "qwen/qwen3-next-80b-a3b-instruct:free",
+    "openai/gpt-oss-120b:free",
     "meta-llama/llama-3.3-70b-instruct:free",
+    "nousresearch/hermes-3-llama-3.1-405b:free",
 ]
 
 # Max characters accepted for a pasted essay (Telegram message limit headroom)
