@@ -60,7 +60,12 @@ async def on_startup(bot: Bot) -> None:
 
 
 async def on_shutdown(bot: Bot) -> None:
-    await bot.delete_webhook()
+    # Deliberately NOT calling bot.delete_webhook() here. On Render's free
+    # tier, the process is stopped/restarted on every inactivity spin-down --
+    # if we delete the webhook on every shutdown, the bot stays broken until
+    # a manual redeploy, instead of just being briefly slow to wake up.
+    # set_webhook() on the next startup re-confirms the same URL safely.
+    pass
 
 
 def create_app() -> web.Application:
