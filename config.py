@@ -32,11 +32,13 @@ OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1/chat/completions"
 # when a free model dies or gets pulled.
 VISION_MODELS = [
     "nvidia/nemotron-nano-12b-v2-vl:free",
-    # NOTE: this is currently the ONLY confirmed vision-capable free model
-    # from our last live check of openrouter.ai/api/v1/models (see README).
-    # If this one fails/gets pulled, check the live model list again rather
-    # than guessing -- an unverified "vision" model that's actually text-only
-    # will fail Task 1 image reads silently or with confusing errors.
+    "google/gemma-4-31b-it:free",
+    "google/gemma-4-26b-a4b-it:free",
+    "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+    # NOTE: verified vision-capable + free via openrouter.ai/api/v1/models
+    # (filtered on architecture.input_modalities containing "image").
+    # Skipped nemotron-3.5-content-safety:free -- likely a moderation/
+    # classifier model, not suited for general image description tasks.
 ]
 
 TEXT_MODELS = [
