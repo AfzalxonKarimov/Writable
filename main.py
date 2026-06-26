@@ -30,27 +30,33 @@ async def health_check(request: web.Request) -> web.Response:
 
 
 async def on_startup(bot: Bot) -> None:
-    await init_db()
-    if config.WEBHOOK_URL:
-        result = await bot.set_webhook(
-            url=config.WEBHOOK_URL,
-            secret_token=config.WEBHOOK_SECRET,
-            drop_pending_updates=True,
-        )
-        if result:
-            logger.info(f"Webhook successfully set to {config.WEBHOOK_URL}")
-        else:
-            logger.error(
-                f"set_webhook() returned False for {config.WEBHOOK_URL} -- "
-                f"Telegram rejected the request without raising an exception."
-            )
-        info = await bot.get_webhook_info()
-        logger.info(f"getWebhookInfo confirms: url='{info.url}', last_error='{info.last_error_message}'")
-    else:
-        logger.warning("WEBHOOK_BASE_URL not set -- bot will not receive updates until configured.")
-async def on_shutdown(bot: Bot) -> None:
-    await bot.delete_webhook()
+    try:
+        logger.info("on_startup: beginning init_db()")
+        await init_db()
+        logger.info("on_startup: init_db() completed successfully")
 
+        if config.WEBHOOK_URL:
+            logger.info(f"on_startup: calling set_webhook for {config.WEBHOOK_URL}")
+            result = await bot.set_webhook(
+                url=config.WEBHOOK_URL,
+                secret_token=config.WEBHOOK_SECRET,
+                drop_pending_updates=True,
+            )
+            if result:
+                logger.info(f"Webhook successfully set to {config.WEBHOOK_URL}")
+            else:
+                logger.error(
+                    f"set_webhook() returned False for {config.WEBHOOK_URL} -- "
+                    f"Telegram rejected the request without raising an exception."
+                )
+            info = await bot.get_webhook_info()
+            logger.info(f"getWebhookInfo confirms: url='{info.url}', last_error='{info.last_error_message}'")
+        else:
+            logger.warning("WEBHOOK_BASE_URL not set -- bot will not receive updates until configured.")
+    except Exception:
+        logger.exception("on_startup FAILED with an exception:")
+        raise
+    
 
 def create_app() -> web.Application:
     if not config.BOT_TOKEN:
